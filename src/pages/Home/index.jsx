@@ -1,13 +1,67 @@
-import { Box, Button, Input, Stack, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import assets from '../../assets';
+import { UserAuth } from '../../context/AuthContext';
+import { loginValidation } from '../../utils/validation';
 
 const index = () => {
+  const [error, setError] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [inputData, setInputData] = useState({});
+  const { user, signIn } = UserAuth();
+  const navigate = useNavigate();
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setInputData({ ...inputData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const errors = loginValidation(inputData);
+    if (Object.keys(errors).length !== 0) {
+      setLoading(false);
+      return setError(errors);
+    }
+    try {
+      await signIn(inputData.email, inputData.password);
+      setLoading(false);
+      navigate('./chat');
+    } catch (err) {
+      const errors = {};
+      errors.custom = 'Invalid email or password';
+      setLoading(false);
+      return setError(errors);
+    }
+  };
+
+  useEffect(() => {
+    if (user && user !== null && Object.keys(user).length !== 0)
+      return navigate('/chat');
+  }, [user]);
+
   return (
-    <Box sx={{ width: '100%', height: '100vh', background: '#303841' }}>
+    <Box
+      sx={{
+        width: '100vw',
+        minHeight: '100vh',
+        maxHeight: '100vh',
+        background: '#303841',
+      }}
+    >
       <Stack
         sx={{
-          py: 10,
+          py: 5,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
@@ -63,25 +117,58 @@ const index = () => {
               p: 4,
             }}
           >
-            <Input
-              placeholder="Username"
+            <TextField
+              fullWidth
+              variant="standard"
+              placeholder="Email address"
+              type="email"
+              name="email"
+              onChange={handleChange}
+              required
+              error={error?.email !== undefined}
+              helperText={error?.email}
+              autoComplete="off"
               sx={{
                 mb: 4,
-                color: '#A6B0CF',
+                input: { color: '#95AECA' },
               }}
             />
-            <Input
+            <TextField
+              fullWidth
               placeholder="Password"
+              variant="standard"
+              name="password"
+              type="password"
+              onChange={handleChange}
+              required
+              error={error?.password !== undefined}
+              helperText={error?.password}
+              autoComplete="off"
               sx={{
-                mb: 7,
-                color: '#A6B0CF',
+                mb: 4,
+                input: { color: '#95AECA' },
               }}
             />
+            {error.custom && (
+              <Alert
+                severity="error"
+                sx={{
+                  mb: 4,
+                }}
+              >
+                {error.custom}
+              </Alert>
+            )}
             <Button
               variant="contained"
               sx={{ width: '100%', background: '#6159CB' }}
+              onClick={handleSubmit}
             >
-              Sign in
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                'Sign in'
+              )}
             </Button>
           </Stack>
         </Stack>

@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getDatabase, onValue } from 'firebase/database';
-import { getStorage } from 'firebase/storage';
+//import { getStorage } from 'firebase/storage';
 import { useEffect } from 'react';
 
 import { withSuspense } from './with-suspense.js';
@@ -14,14 +14,13 @@ const firebaseConfig = {
   storageBucket: `${import.meta.env.VITE_STORAGEBUCKET}`,
   messagingSenderId: `${import.meta.env.VITE_MESSAGINGSENDERID}`,
   appId: `${import.meta.env.VITE_APPID}`,
-  measurementId: `${import.meta.env.VITE_MEASUREMENTID}`,
 };
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const database = getDatabase();
 export const auth = getAuth();
-export const storage = getStorage(app);
+//export const storage = getStorage(app);
 
 /** @param {import("firebase/database").Query} query */
 export let reference_or_query_to_string = (query) => {
