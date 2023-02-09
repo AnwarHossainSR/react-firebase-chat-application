@@ -1,19 +1,19 @@
-import {initializeApp} from 'firebase/app';
-import {getAuth} from 'firebase/auth';
-import {getDatabase, onValue} from 'firebase/database';
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getDatabase, onValue } from 'firebase/database';
 // import { getStorage } from 'firebase/storage';
-import {useEffect} from 'react';
+import { useEffect } from 'react';
 
-import {withSuspense} from './with-suspense.js';
+import { withSuspense } from './with-suspense.js';
 
 const firebaseConfig = {
-  apiKey : `${import.meta.env.VITE_API_KEY}`,
-  authDomain : `${import.meta.env.VITE_AUTH_DOMAIN}`,
-  databaseURL : `${import.meta.env.VITE_DATABASE_URL}`,
-  projectId : `${import.meta.env.VITE_PROJECTID}`,
-  storageBucket : `${import.meta.env.VITE_STORAGEBUCKET}`,
-  messagingSenderId : `${import.meta.env.VITE_MESSAGINGSENDERID}`,
-  appId : `${import.meta.env.VITE_APPID}`,
+  apiKey: `${import.meta.env.VITE_API_KEY}`,
+  authDomain: `${import.meta.env.VITE_AUTH_DOMAIN}`,
+  databaseURL: `${import.meta.env.VITE_DATABASE_URL}`,
+  projectId: `${import.meta.env.VITE_PROJECTID}`,
+  storageBucket: `${import.meta.env.VITE_STORAGEBUCKET}`,
+  messagingSenderId: `${import.meta.env.VITE_MESSAGINGSENDERID}`,
+  appId: `${import.meta.env.VITE_APPID}`,
 };
 
 // Initialize Firebase
@@ -31,30 +31,32 @@ export let reference_or_query_to_string = (query) => {
 };
 
 let useFirebaseFirstValue = withSuspense(
-    (/** @type {import("firebase/database").Query} */ path) => {
-      return reference_or_query_to_string(path);
-    },
-    (/** @type {import("firebase/database").Query} */ path) => {
-      return new Promise((yell) => {
-        let unsubscribe = () => {};
-        unsubscribe = onValue(path, (snapshot) => {
-          unsubscribe();
-          yell(snapshot.val());
-        });
+  (/** @type {import("firebase/database").Query} */ path) => {
+    return reference_or_query_to_string(path);
+  },
+  (/** @type {import("firebase/database").Query} */ path) => {
+    return new Promise((yell) => {
+      let unsubscribe = () => {};
+      unsubscribe = onValue(path, (snapshot) => {
+        unsubscribe();
+        yell(snapshot.val());
       });
     });
+  }
+);
 
 export let useFirebase = (
-    /** @type {import("firebase/database").Query} */ path) => {
+  /** @type {import("firebase/database").Query} */ path
+) => {
   let value = useFirebaseFirstValue(path);
 
   useEffect(() => {
-    let dispose = onValue(
-        path,
-        (snapshot) => { useFirebaseFirstValue.refetch(path, snapshot.val()); });
+    let dispose = onValue(path, (snapshot) => {
+      useFirebaseFirstValue.refetch(path, snapshot.val());
+    });
 
     return () => dispose();
-  }, [ reference_or_query_to_string(path) ]);
+  }, [reference_or_query_to_string(path)]);
 
   return value;
 };
