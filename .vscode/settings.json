@@ -5,5 +5,13 @@
   },
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "cSpell.words": ["Anwar", "Chatvia", "Hossain"]
+  "cSpell.words": [
+    "Anwar",
+    "Chatvia",
+    "Hossain",
+    "MEASUREMENTID",
+    "MESSAGINGSENDERID",
+    "PROJECTID",
+    "STORAGEBUCKET"
+  ]
 }

@@ -52,9 +52,10 @@ const index = () => {
         <Stack
           sx={{
             mt: 4,
-            width: '456px',
+            width: '451px',
             height: 'auto',
             background: '#262E35',
+            borderRadius: 2,
           }}
         >
           <Stack
