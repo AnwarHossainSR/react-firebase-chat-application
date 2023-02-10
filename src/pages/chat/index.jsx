@@ -19,10 +19,8 @@ const Chat = () => {
   return (
     <Stack
       sx={{
-        minWidth: '100vw',
-        maxWidth: '100vw',
-        minHeight: '100vh',
-        maxHeight: '100vh',
+        width: '100vw',
+        height: '100vh',
         background: '#303841',
         color: '#A2AEAD',
       }}
@@ -37,8 +35,12 @@ const Chat = () => {
         <Stack
           sx={{
             flex: 2,
-            maxWidth: '310px',
-            minWidth: '310px',
+            width: '310px',
+            height: '100%',
+            overflow: 'auto',
+            '&::-webkit-scrollbar': {
+              width: '0.4em',
+            },
           }}
         >
           <Sidebar />
