@@ -9,7 +9,7 @@ import Search from '../Search';
 
 const Sidebar = () => {
   return (
-    <Stack p={3} gap={1} position="relative">
+    <Stack p={2} gap={1} position="relative">
       <Stack
         sx={{
           display: 'flex',
@@ -52,13 +52,8 @@ const Sidebar = () => {
         <Typography variant="p" color="#D2D4D5">
           Recent
         </Typography>
-        <Stack
-          mt={2}
-          sx={{
-            width: '100%',
-          }}
-        >
-          {Array.from({ length: 5 }).map((_, index) => (
+        <Stack mt={2} pb={5}>
+          {Array.from({ length: 10 }).map((_, index) => (
             <ChatCard key={index} />
           ))}
         </Stack>

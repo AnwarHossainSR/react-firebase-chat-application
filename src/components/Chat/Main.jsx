@@ -1,4 +1,6 @@
 import { Stack } from '@mui/material';
+import TopBar from '../common/TopBar';
+import ChatScreen from './ChatScreen';
 
 const Main = () => {
   return (
@@ -9,7 +11,10 @@ const Main = () => {
         maxHeight: '100vh',
       }}
     >
-      Main
+      <TopBar />
+      <Stack>
+        <ChatScreen />
+      </Stack>
     </Stack>
   );
 };
