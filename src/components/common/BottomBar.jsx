@@ -1,18 +1,21 @@
 import { Stack } from '@mui/material';
 
-const TopBar = () => {
+const BottomBar = () => {
   return (
     <Stack
       sx={{
         height: '10%',
-        borderBottom: '1px solid #36404a',
+        borderTop: '1px solid #36404a',
+        position: 'fixed',
+        bottom: 0,
+        width: '100%',
       }}
     >
       <Stack p={2} direction="row" justifyContent="space-between">
-        Top
+        Bottom
       </Stack>
     </Stack>
   );
 };
 
-export default TopBar;
+export default BottomBar;

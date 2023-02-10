@@ -45,11 +45,7 @@ const Chat = () => {
         >
           <Sidebar />
         </Stack>
-        <Stack
-          sx={{
-            flex: 6,
-          }}
-        >
+        <Stack flex={6}>
           <Main />
         </Stack>
       </Stack>
