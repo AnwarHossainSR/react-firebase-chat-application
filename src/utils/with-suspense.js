@@ -1,6 +1,6 @@
-import * as React from 'react';
 // import { shallowEqualArrays } from "shallow-equal";
 import { EventEmitter } from 'events';
+import * as React from 'react';
 
 /**
  * @typedef Deps
@@ -49,7 +49,8 @@ let suspense_fetch = ({ cache, key, executeFn, argument }) => {
  * @param {(input: Input) => Key} keyMapFn
  * @param {(input: Input) => Promise<Output>} executeFn
  * @param {Map<Key, Deferred>} cache
- * @returns {((input: Input) => Output) & { refetch: (input: Input, value: Output) => Promise<void> }}
+ * @returns {((input: Input) => Output) & { refetch: (input: Input, value:
+ *     Output) => Promise<void> }}
  */
 export let withSuspense = (keyMapFn, executeFn, cache = new Map()) => {
   let suspense_events = new EventEmitter();
