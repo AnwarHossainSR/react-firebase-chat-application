@@ -7,10 +7,12 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { ref, update } from 'firebase/database';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import assets from '../../assets';
 import { UserAuth } from '../../context/AuthContext';
+import { database, useFirebase } from '../../utils/firebase';
 import { registerValidation } from '../../utils/validation';
 
 const SignUp = () => {
@@ -19,6 +21,8 @@ const SignUp = () => {
   const [inputData, setInputData] = useState({});
   const { user, createUser } = UserAuth();
   const navigate = useNavigate();
+  const users_ref = ref(database, `users/${user?.uid}`);
+  const user_exists = useFirebase(users_ref);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -43,10 +47,24 @@ const SignUp = () => {
       return setError(errors);
     }
   };
+  const handleFunc = async () => {
+    if (user_exists) {
+      return navigate(`/chats/${user.uid}`);
+    } else {
+      update(users_ref, {
+        firstName: inputData.firstName,
+        lastName: inputData.lastName,
+        email: inputData.email,
+        password: inputData.password,
+      });
+      return navigate(`/chats/${user.uid}`);
+    }
+  };
 
   useEffect(() => {
-    if (user && user !== null && Object.keys(user).length !== 0)
-      return navigate(`/chats/${user.uid}`);
+    if (user && user !== null && Object.keys(user).length !== 0) {
+      handleFunc();
+    }
   }, [user]);
 
   return (

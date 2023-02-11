@@ -1,13 +1,22 @@
 import { Stack, Typography } from '@mui/material';
+import { useOutletContext } from 'react-router-dom';
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/pagination';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { UserAuth } from '../../context/AuthContext';
+import { convertToArray, getCurrentUserChats } from '../../utils/helper';
 import ChatCard from '../Card/ChatCard';
 import ActiveUser from '../Chat/ActiveUser';
 import Search from '../Search';
 
 const Sidebar = () => {
+  const { user } = UserAuth();
+  const [users, chats] = useOutletContext();
+  const allUsers = convertToArray(users);
+  const chatsArr = convertToArray(chats);
+  const currentUserChats = getCurrentUserChats(chatsArr, user?.id);
+
   return (
     <Stack p={2} gap={1} position="relative">
       <Stack
@@ -31,16 +40,17 @@ const Sidebar = () => {
           justifyContent: 'flex-start',
         }}
       >
-        {Array.from({ length: 10 }).map((_, index) => (
-          <SwiperSlide
-            key={index}
-            style={{
-              width: '71px',
-            }}
-          >
-            <ActiveUser index={index} />
-          </SwiperSlide>
-        ))}
+        {allUsers &&
+          allUsers.map((item) => (
+            <SwiperSlide
+              key={item?.id}
+              style={{
+                width: '71px',
+              }}
+            >
+              <ActiveUser user={item} currentUserChats={currentUserChats} />
+            </SwiperSlide>
+          ))}
       </Swiper>
 
       <Stack
@@ -53,9 +63,13 @@ const Sidebar = () => {
           Recent
         </Typography>
         <Stack mt={2} pb={5}>
-          {Array.from({ length: 10 }).map((_, index) => (
-            <ChatCard key={index} />
-          ))}
+          {currentUserChats?.length > 0 ? (
+            currentUserChats.map((_, index) => <ChatCard key={index} />)
+          ) : (
+            <Typography variant="body1" color="#D2D4D5">
+              No recent chats
+            </Typography>
+          )}
         </Stack>
       </Stack>
     </Stack>
