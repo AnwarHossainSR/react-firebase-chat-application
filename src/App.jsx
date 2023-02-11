@@ -1,9 +1,11 @@
 import { Stack } from '@mui/material';
 import { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import NotFound from './pages/404/index.jsx';
-import Chat from './pages/chat/index.jsx';
+import NotFound from './pages/404';
+import Chats from './pages/Chats';
 import Home from './pages/Home';
+import SignUp from './pages/Home/Signup.jsx';
+import Protected from './pages/Protected';
 
 const App = () => {
   return (
@@ -16,7 +18,11 @@ const App = () => {
       <Suspense fallback={<p>loading...</p>}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/chat" element={<Chat />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/chats/:userId/" element={<Protected />}>
+            <Route index element={<Chats />} />
+            <Route path=":chatId" element={<NotFound />} />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

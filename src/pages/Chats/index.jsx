@@ -1,21 +1,8 @@
 import { Stack } from '@mui/system';
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Main from '../../components/Chat/Main';
 import Sidebar from '../../components/common/Sidebar';
-import { UserAuth } from '../../context/AuthContext';
 
-const Chat = () => {
-  const navigate = useNavigate();
-  const { user } = UserAuth();
-  useEffect(() => {
-    if (!user || user === null || Object.keys(user).length === 0) {
-      return navigate('/');
-    } else {
-      return navigate('/chat');
-    }
-  }, [user]);
-
+const Chats = () => {
   return (
     <Stack
       sx={{
@@ -53,4 +40,4 @@ const Chat = () => {
   );
 };
 
-export default Chat;
+export default Chats;
