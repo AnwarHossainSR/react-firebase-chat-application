@@ -1,26 +1,29 @@
 import { Stack } from '@mui/material';
-import Message from '../Message';
+import OtherMessage from '../Message/OtherMessage';
+import OwnMessage from '../Message/OwnMessage';
 
 const ChatScreen = () => {
   return (
     <Stack
       sx={{
         p: 2,
+        display: 'flex',
+        alignItems: 'center',
       }}
     >
       <Stack
         sx={{
-          float: 'left',
+          marginLeft: 'auto',
         }}
       >
-        <Message />
+        <OwnMessage />
       </Stack>
       <Stack
         sx={{
-          float: 'right',
+          marginRight: 'auto',
         }}
       >
-        <Message />
+        <OtherMessage />
       </Stack>
     </Stack>
   );
