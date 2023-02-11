@@ -31,7 +31,6 @@ const OtherMessage = () => {
           }}
         >
           <Stack
-            gutterBottom
             sx={{
               backgroundColor: '#7269ef',
               borderRadius: '8px 8px 8px 0',

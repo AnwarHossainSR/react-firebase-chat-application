@@ -29,7 +29,6 @@ const OwnMessage = () => {
             }}
           />
           <Stack
-            gutterBottom
             sx={{
               backgroundColor: '#36404A',
               borderRadius: '8px 8px 8px 0',
