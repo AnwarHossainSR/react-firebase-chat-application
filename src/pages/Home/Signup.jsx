@@ -11,13 +11,13 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import assets from '../../assets';
 import { UserAuth } from '../../context/AuthContext';
-import { loginValidation } from '../../utils/validation';
+import { registerValidation } from '../../utils/validation';
 
-const index = () => {
+const SignUp = () => {
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
   const [inputData, setInputData] = useState({});
-  const { user, signIn } = UserAuth();
+  const { user, createUser } = UserAuth();
   const navigate = useNavigate();
 
   const handleChange = (event) => {
@@ -28,13 +28,13 @@ const index = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const errors = loginValidation(inputData);
+    const errors = registerValidation(inputData);
     if (Object.keys(errors).length !== 0) {
       setLoading(false);
       return setError(errors);
     }
     try {
-      await signIn(inputData.email, inputData.password);
+      await createUser(inputData.email, inputData.password);
       setLoading(false);
     } catch (err) {
       const errors = {};
@@ -95,11 +95,8 @@ const index = () => {
             mt: 4,
           }}
         >
-          <Typography variant="h6" color="#D2D4D5">
-            Sign in
-          </Typography>
           <Typography variant="p" color="#9AA1b9" mt={1}>
-            Sign in to continue to Chatvia
+            Sign Up to continue to Chatvia
           </Typography>
         </Stack>
         <Stack
@@ -116,6 +113,44 @@ const index = () => {
               p: 4,
             }}
           >
+            <Stack
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                gap: 1,
+              }}
+            >
+              <TextField
+                fullWidth
+                variant="standard"
+                placeholder="First Name"
+                name="firstName"
+                onChange={handleChange}
+                required
+                error={error?.firstName !== undefined}
+                helperText={error?.firstName}
+                autoComplete="off"
+                sx={{
+                  mb: 4,
+                  input: { color: '#95AECA' },
+                }}
+              />
+              <TextField
+                fullWidth
+                variant="standard"
+                placeholder="Last Name"
+                name="lastName"
+                onChange={handleChange}
+                required
+                error={error?.lastName !== undefined}
+                helperText={error?.lastName}
+                autoComplete="off"
+                sx={{
+                  mb: 4,
+                  input: { color: '#95AECA' },
+                }}
+              />
+            </Stack>
             <TextField
               fullWidth
               variant="standard"
@@ -181,7 +216,7 @@ const index = () => {
               textDecoration: 'none',
             }}
           >
-            Signup now
+            SignIn now
           </Link>
         </Typography>
       </Stack>
@@ -189,4 +224,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default SignUp;

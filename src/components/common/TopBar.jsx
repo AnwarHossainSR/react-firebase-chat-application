@@ -1,8 +1,22 @@
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import SearchIcon from '@mui/icons-material/Search';
 import { Avatar, Stack, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { UserAuth } from '../../context/AuthContext';
 
 const TopBar = () => {
+  const { logout } = UserAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/');
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
+
   return (
     <Stack
       sx={{
@@ -35,7 +49,7 @@ const TopBar = () => {
         }}
       >
         <SearchIcon cursor="pointer" />
-        <MoreVertIcon cursor="pointer" />
+        <ExitToAppIcon cursor="pointer" onClick={handleLogout} />
       </Stack>
     </Stack>
   );
