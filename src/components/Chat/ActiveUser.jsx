@@ -1,7 +1,31 @@
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { Avatar, Stack, Typography } from '@mui/material';
+import { set } from 'firebase/database';
+import { useNavigate, useOutletContext } from 'react-router-dom';
+import { v4 as uuid } from 'uuid';
+import { isChatExist } from '../../utils/helper';
 
-const ActiveUser = () => {
+const ActiveUser = ({ user, currentUserChats }) => {
+  const [, , chats_ref] = useOutletContext();
+  const navigate = useNavigate();
+
+  const handleClick = async (id) => {
+    const checkChat = await isChatExist(currentUserChats, id);
+    if (checkChat) {
+      return navigate(`./${checkChat?.id}`);
+    } else {
+      const uid = uuid();
+      set(chats_ref, {
+        [uid]: {
+          chatId: uid,
+          userIds: [user?.id, id],
+          createdAt: Date.now(),
+        },
+      });
+      return navigate(`./${uid}`);
+    }
+  };
+
   return (
     <div
       style={{
@@ -11,6 +35,7 @@ const ActiveUser = () => {
         justifyContent: 'center',
         alignItems: 'center',
       }}
+      onClick={() => handleClick(user?.id)}
     >
       <Stack
         sx={{
@@ -21,6 +46,7 @@ const ActiveUser = () => {
           alignItems: 'center',
           justifyContent: 'space-between',
           flexDirection: 'row',
+          cursor: 'pointer',
         }}
       >
         <FiberManualRecordIcon
@@ -57,7 +83,7 @@ const ActiveUser = () => {
         }}
       >
         <Typography variant="body2" sx={{ color: '#fff', mt: 1.5 }}>
-          Mahedi
+          {user?.firstName}
         </Typography>
       </div>
     </div>

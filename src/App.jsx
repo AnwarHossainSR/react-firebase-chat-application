@@ -21,7 +21,7 @@ const App = () => {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/chats/:userId/" element={<Protected />}>
             <Route index element={<Chats />} />
-            <Route path=":chatId" element={<NotFound />} />
+            <Route path=":chatId" element={<Chats />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

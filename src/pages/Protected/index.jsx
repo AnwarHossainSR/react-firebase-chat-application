@@ -8,18 +8,15 @@ const Protected = () => {
   const { user } = UserAuth();
   const navigate = useNavigate();
   //   const { pathname } = useLocation();
-  //   const { team_id } = useParams();
-  const game_ref = ref(database, `users`);
-  const users = useFirebase(game_ref);
+  const users_ref = ref(database, `users`);
+  const users = useFirebase(users_ref);
   const chats_ref = ref(database, `chats`);
   const chats = useFirebase(chats_ref);
   const messages_ref = ref(database, `messages`);
   const messages = useFirebase(messages_ref);
-
   if (!user || user === null || Object.keys(user).length === 0) {
     return navigate('/');
   }
-
   return <Outlet context={[users, chats, chats_ref, messages, messages_ref]} />;
 };
 
