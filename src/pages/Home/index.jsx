@@ -51,7 +51,7 @@ const index = () => {
 
   useEffect(() => {
     if (user && user !== null && Object.keys(user).length !== 0)
-      return navigate(`/chats/${user.uid}`);
+      return navigate('/chats');
   }, [user]);
 
   return (

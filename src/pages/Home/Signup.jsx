@@ -51,7 +51,7 @@ const SignUp = () => {
   };
   const handleFunc = async () => {
     if (user_exists) {
-      return navigate(`/chats/${user.uid}`);
+      return navigate(`/chats`);
     } else {
       update(user_ref, {
         firstName: inputData.firstName,
@@ -59,7 +59,7 @@ const SignUp = () => {
         email: inputData.email,
         password: inputData.password,
       });
-      return navigate(`/chats/${user.uid}`);
+      return navigate(`/chats`);
     }
   };
 

@@ -7,26 +7,39 @@ import { UserAuth } from '../../context/AuthContext';
 import { database } from '../../utils/firebase';
 import { isChatExist } from '../../utils/helper';
 
-const ActiveUser = ({ user, chatsArr }) => {
-  const { user: currentUser } = UserAuth();
+const ActiveUser = ({ activeUser, chats }) => {
+  const { user } = UserAuth();
   const navigate = useNavigate();
 
   const handleClick = async (id) => {
-    const checkChat = await isChatExist(chatsArr, id);
-    if (checkChat) {
-      return navigate(`/chats/${currentUser?.uid}/${checkChat?.id}`);
-    } else {
-      const uid = uuid();
-      const user_ref = ref(database, `chats/${uid}`);
-      console.log(uid);
-      update(user_ref, {
-        chatId: uid,
-        userIds: [user?.id, currentUser?.uid],
-        createdAt: Date.now(),
-      });
-      return navigate(`/chats/${currentUser?.uid}/${uid}`);
-    }
+    const checkChat = await isChatExist(chats, id);
+    console.log('checkChat', checkChat);
+    if (checkChat) return navigate(`/chats/${checkChat?.id}`);
+    const uid = uuid();
+
+    const chat_ref = ref(database, `chats/${uid}`);
+    update(chat_ref, {
+      chatId: uid,
+      userIds: [user?.uid, id],
+      createdAt: Date.now(),
+    });
+    const uid2 = uuid();
+    const messageRef = ref(database, `messages/${uid2}`);
+    update(messageRef, {
+      chatId: uid,
+      createdAt: Date.now(),
+    });
+    return navigate(`/chats/${uid}`);
   };
+
+  // const ActiveUser = ({ activeUser, chats }) => {
+  //   const navigate = useNavigate();
+  //   const handleClick = async (id) => {
+  //     const checkChat = await isChatExist(chats, id);
+  //     if (checkChat) return navigate(`/chats/${checkChat?.id}/${activeUser?.id}`);
+  //     const uid = uuid();
+  //     return navigate(`/chats/${uid}/${activeUser?.id}`);
+  //   };
 
   return (
     <div
@@ -37,7 +50,7 @@ const ActiveUser = ({ user, chatsArr }) => {
         justifyContent: 'center',
         alignItems: 'center',
       }}
-      onClick={() => handleClick(user?.id)}
+      onClick={() => handleClick(activeUser?.id)}
     >
       <Stack
         sx={{
@@ -68,7 +81,7 @@ const ActiveUser = ({ user, chatsArr }) => {
             width: '30px',
             height: '30px',
           }}
-          alt="Remy Sharp"
+          alt={activeUser?.firstName}
           src="https://material-ui.com/static/images/avatar/1.jpg"
         />
       </Stack>
@@ -85,7 +98,7 @@ const ActiveUser = ({ user, chatsArr }) => {
         }}
       >
         <Typography variant="body2" sx={{ color: '#fff', mt: 1.5 }}>
-          {user?.firstName}
+          {activeUser?.firstName}
         </Typography>
       </div>
     </div>

@@ -1,8 +1,9 @@
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Avatar, Stack, Typography } from '@mui/material';
+import moment from 'moment';
 
-const OtherMessage = () => {
+const OtherMessage = ({ message, userInfo }) => {
   return (
     <Stack
       sx={{
@@ -44,10 +45,7 @@ const OtherMessage = () => {
               justifyContent="space-between"
               maxWidth="364px"
             >
-              <Stack>
-                Message sssssssssss dsgdsgdsgds dsgdsgdsg sgsfgfscv dsgrstdgsg
-                dsgsdgsdgf
-              </Stack>
+              <Stack>{message?.message}</Stack>
             </Stack>
             <Stack
               sx={{
@@ -67,7 +65,9 @@ const OtherMessage = () => {
                   color: '#B9B4F7',
                 }}
               />
-              <Typography variant="caption"> 2 hours ago</Typography>
+              <Typography variant="caption">
+                {moment(message?.createdAt).format('hh:mm A')}
+              </Typography>
             </Stack>
           </Stack>
           <MoreVertIcon
@@ -78,7 +78,10 @@ const OtherMessage = () => {
             }}
           />
         </Stack>
-        <Typography variant="caption"> Anwar Hossain</Typography>
+        <Typography variant="caption">
+          {' '}
+          {`${userInfo?.firstName}${' '}${userInfo?.lastName}`}
+        </Typography>
       </Stack>
     </Stack>
   );

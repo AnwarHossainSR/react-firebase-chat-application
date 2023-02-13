@@ -19,8 +19,7 @@ const Sidebar = () => {
   const [users, chats] = useOutletContext();
   const allUsers = convertToArray(users);
   const allUsersExceptMe = usersExceptMe(allUsers, user);
-  const chatsArr = convertToArray(chats);
-  const currentUserChats = getCurrentUserChats(chatsArr, user?.uid);
+  const currentUserChats = getCurrentUserChats(chats, user?.uid);
   const loggedIn = allUsers.find((item) => item?.id === user?.uid);
 
   return (
@@ -54,11 +53,7 @@ const Sidebar = () => {
                 width: '71px',
               }}
             >
-              <ActiveUser
-                user={item}
-                currentUserChats={currentUserChats}
-                chatsArr={chatsArr}
-              />
+              <ActiveUser activeUser={item} chats={chats} />
             </SwiperSlide>
           ))}
       </Swiper>
@@ -74,7 +69,9 @@ const Sidebar = () => {
         </Typography>
         <Stack mt={2} pb={5}>
           {currentUserChats?.length > 0 ? (
-            currentUserChats.map((_, index) => <ChatCard key={index} />)
+            currentUserChats.map((item, index) => (
+              <ChatCard key={index} chat={item} />
+            ))
           ) : (
             <Typography variant="body1" color="#D2D4D5">
               No recent chats
