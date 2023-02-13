@@ -3,7 +3,7 @@ export const convertToArray = (obj) => {
   for (let key in obj) {
     arr.push({ ...obj[key], id: key });
   }
-  //return arr randomly
+  // return arr randomly
   return arr.sort(() => Math.random() - 0.5);
 };
 
