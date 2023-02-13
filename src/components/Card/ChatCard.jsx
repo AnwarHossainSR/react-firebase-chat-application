@@ -60,7 +60,7 @@ const ChatCard = ({ chat }) => {
         </Typography>
         <Typography variant="body2" sx={{ color: '#abb4d2' }}>
           {/* contain just 21 character else ... */}
-          {truncate('Hello, how are you?', 21)}
+          {truncate(`${chat?.lastMessage ?? 'no message'}`, 21)}
         </Typography>
       </Stack>
       <Stack>

@@ -1,10 +1,18 @@
 import { Stack, Typography } from '@mui/material';
+import {
+  equalTo,
+  limitToLast,
+  orderByChild,
+  query,
+  ref,
+} from 'firebase/database';
 import { useOutletContext } from 'react-router-dom';
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/pagination';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { UserAuth } from '../../context/AuthContext';
+import { database, useFirebase } from '../../utils/firebase';
 import {
   convertToArray,
   getCurrentUserChats,
@@ -21,6 +29,19 @@ const Sidebar = () => {
   const allUsersExceptMe = usersExceptMe(allUsers, user);
   const currentUserChats = getCurrentUserChats(chats, user?.uid);
   const loggedIn = allUsers.find((item) => item?.id === user?.uid);
+
+  currentUserChats.forEach((item) => {
+    const message = useFirebase(
+      query(
+        ref(database, 'messages'),
+        orderByChild(`chatId`),
+        equalTo(item.id),
+        limitToLast(1)
+      )
+    );
+    const data = Object.values(message);
+    item.lastMessage = data[0]?.message;
+  });
 
   return (
     <Stack p={2} gap={1} position="relative">
