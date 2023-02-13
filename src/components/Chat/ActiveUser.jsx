@@ -1,30 +1,45 @@
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { Avatar, Stack, Typography } from '@mui/material';
-import { set } from 'firebase/database';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { ref, update } from 'firebase/database';
+import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
+import { UserAuth } from '../../context/AuthContext';
+import { database } from '../../utils/firebase';
 import { isChatExist } from '../../utils/helper';
 
-const ActiveUser = ({ user, currentUserChats }) => {
-  const [, , chats_ref] = useOutletContext();
+const ActiveUser = ({ activeUser, chats }) => {
+  const { user } = UserAuth();
   const navigate = useNavigate();
 
   const handleClick = async (id) => {
-    const checkChat = await isChatExist(currentUserChats, id);
-    if (checkChat) {
-      return navigate(`./${checkChat?.id}`);
-    } else {
-      const uid = uuid();
-      set(chats_ref, {
-        [uid]: {
-          chatId: uid,
-          userIds: [user?.id, id],
-          createdAt: Date.now(),
-        },
-      });
-      return navigate(`./${uid}`);
-    }
+    const checkChat = await isChatExist(chats, id);
+    console.log('checkChat', checkChat);
+    if (checkChat) return navigate(`/chats/${checkChat?.id}`);
+    const uid = uuid();
+
+    const chat_ref = ref(database, `chats/${uid}`);
+    update(chat_ref, {
+      chatId: uid,
+      userIds: [user?.uid, id],
+      createdAt: Date.now(),
+    });
+    const uid2 = uuid();
+    const messageRef = ref(database, `messages/${uid2}`);
+    update(messageRef, {
+      chatId: uid,
+      createdAt: Date.now(),
+    });
+    return navigate(`/chats/${uid}`);
   };
+
+  // const ActiveUser = ({ activeUser, chats }) => {
+  //   const navigate = useNavigate();
+  //   const handleClick = async (id) => {
+  //     const checkChat = await isChatExist(chats, id);
+  //     if (checkChat) return navigate(`/chats/${checkChat?.id}/${activeUser?.id}`);
+  //     const uid = uuid();
+  //     return navigate(`/chats/${uid}/${activeUser?.id}`);
+  //   };
 
   return (
     <div
@@ -35,7 +50,7 @@ const ActiveUser = ({ user, currentUserChats }) => {
         justifyContent: 'center',
         alignItems: 'center',
       }}
-      onClick={() => handleClick(user?.id)}
+      onClick={() => handleClick(activeUser?.id)}
     >
       <Stack
         sx={{
@@ -66,7 +81,7 @@ const ActiveUser = ({ user, currentUserChats }) => {
             width: '30px',
             height: '30px',
           }}
-          alt="Remy Sharp"
+          alt={activeUser?.firstName}
           src="https://material-ui.com/static/images/avatar/1.jpg"
         />
       </Stack>
@@ -83,7 +98,7 @@ const ActiveUser = ({ user, currentUserChats }) => {
         }}
       >
         <Typography variant="body2" sx={{ color: '#fff', mt: 1.5 }}>
-          {user?.firstName}
+          {activeUser?.firstName}
         </Typography>
       </div>
     </div>

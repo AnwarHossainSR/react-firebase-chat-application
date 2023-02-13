@@ -19,9 +19,11 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/chats/:userId/" element={<Protected />}>
+          <Route path="/chats/" element={<Protected />}>
             <Route index element={<Chats />} />
-            <Route path=":chatId" element={<Chats />} />
+            <Route path=":chatId/">
+              <Route index element={<Chats />} />
+            </Route>
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

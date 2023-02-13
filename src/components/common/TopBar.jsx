@@ -4,7 +4,7 @@ import { Avatar, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { UserAuth } from '../../context/AuthContext';
 
-const TopBar = () => {
+const TopBar = ({ chatUser }) => {
   const { logout } = UserAuth();
   const navigate = useNavigate();
 
@@ -38,14 +38,14 @@ const TopBar = () => {
         }}
       >
         <Avatar src="https://avatars.githubusercontent.com/u/47035452?v=4" />
-        <Typography variant="p">Mahedi Hasan</Typography>
+        <Typography variant="p">{`${chatUser?.firstName} ${chatUser?.lastName}`}</Typography>
       </Stack>
       <Stack
         sx={{
           display: 'flex',
           flexDirection: 'row',
-          gap: '8px',
-          pl: 13,
+          gap: 2,
+          pr: 3,
         }}
       >
         <SearchIcon cursor="pointer" />

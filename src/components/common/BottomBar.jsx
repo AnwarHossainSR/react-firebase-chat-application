@@ -2,9 +2,15 @@ import SendIcon from '@mui/icons-material/Send';
 import { Button, Stack, TextField, Typography } from '@mui/material';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
+import { ref, update } from 'firebase/database';
 import { useEffect, useRef, useState } from 'react';
-
+import { useParams } from 'react-router-dom';
+import { v4 as uuid } from 'uuid';
+import { UserAuth } from '../../context/AuthContext';
+import { database } from '../../utils/firebase';
 const BottomBar = () => {
+  const { user } = UserAuth();
+  const { chatId } = useParams();
   const emojiRef = useRef(null);
   const [showEmojis, setShowEmojis] = useState(false);
   const [input, setInput] = useState('');
@@ -20,6 +26,20 @@ const BottomBar = () => {
   const handleClickOutside = (e) => {
     if (emojiRef.current && !emojiRef.current.contains(e.target)) {
       setShowEmojis(false);
+    }
+  };
+
+  const handleSendMessage = async () => {
+    if (input) {
+      const uid = uuid();
+      const message_ref = ref(database, `messages/${uid}`);
+      await update(message_ref, {
+        chatId: chatId,
+        userId: user?.uid,
+        message: input,
+        createdAt: Date.now(),
+      });
+      setInput('');
     }
   };
 
@@ -120,6 +140,7 @@ const BottomBar = () => {
               flexDirection: 'row',
               gap: 1,
             }}
+            onClick={handleSendMessage}
           >
             <SendIcon
               sx={{

@@ -36,9 +36,14 @@ const index = () => {
     try {
       await signIn(inputData.email, inputData.password);
       setLoading(false);
-    } catch (err) {
+    } catch (error) {
       const errors = {};
-      errors.custom = 'Invalid email or password';
+      if (error.message === 'Firebase: Error (auth/user-not-found).') {
+        errors.custom = 'User not found';
+      }
+      if (error.message === 'Firebase: Error (auth/wrong-password).') {
+        errors.custom = 'Wrong password';
+      }
       setLoading(false);
       return setError(errors);
     }
@@ -46,7 +51,7 @@ const index = () => {
 
   useEffect(() => {
     if (user && user !== null && Object.keys(user).length !== 0)
-      return navigate(`/chats/${user.uid}`);
+      return navigate('/chats');
   }, [user]);
 
   return (

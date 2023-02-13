@@ -1,8 +1,17 @@
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { Avatar, Chip, Stack, Typography } from '@mui/material';
+import { ref } from 'firebase/database';
+import { useNavigate } from 'react-router-dom';
+import { UserAuth } from '../../context/AuthContext';
+import { database, useFirebase } from '../../utils/firebase';
 
-const ChatCard = () => {
-  //count 21 character and if more then ...
+const ChatCard = ({ chat }) => {
+  const { user } = UserAuth();
+  const navigate = useNavigate();
+  const chatUserId =
+    chat?.userIds[0] === user?.uid ? chat?.userIds[1] : chat?.userIds[0];
+  const userRef = ref(database, `users/${chatUserId}`);
+  const chatUser = useFirebase(userRef);
   const truncate = (str, n) => {
     return str?.length > n ? `${str.substr(0, n - 1)}...` : str;
   };
@@ -22,6 +31,7 @@ const ChatCard = () => {
           background: '#36404A',
         },
       }}
+      onClick={() => navigate(`/chats/${chat?.id}`)}
     >
       <Avatar
         src="https://material-ui.com/static/images/avatar/1.jpg"
@@ -42,8 +52,11 @@ const ChatCard = () => {
         />
       </Avatar>
       <Stack>
-        <Typography variant="body2" sx={{ color: '#fff' }}>
-          Mahedi Hasan
+        <Typography
+          variant="body2"
+          sx={{ color: '#fff', textTransform: 'capitalize' }}
+        >
+          {`${chatUser?.firstName} ${chatUser?.lastName}`}
         </Typography>
         <Typography variant="body2" sx={{ color: '#abb4d2' }}>
           {/* contain just 21 character else ... */}
