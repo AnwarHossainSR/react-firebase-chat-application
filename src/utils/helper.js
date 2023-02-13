@@ -14,3 +14,7 @@ export const getCurrentUserChats = (chats, userId) => {
 export const isChatExist = (chats, userId) => {
   return chats.find((chat) => chat?.userIds?.includes(userId));
 };
+
+export const usersExceptMe = (users, user) => {
+  return users.filter((item) => item?.id !== user?.uid);
+};

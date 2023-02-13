@@ -1,28 +1,30 @@
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { Avatar, Stack, Typography } from '@mui/material';
-import { set } from 'firebase/database';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { ref, update } from 'firebase/database';
+import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
+import { UserAuth } from '../../context/AuthContext';
+import { database } from '../../utils/firebase';
 import { isChatExist } from '../../utils/helper';
 
-const ActiveUser = ({ user, currentUserChats }) => {
-  const [, , chats_ref] = useOutletContext();
+const ActiveUser = ({ user, chatsArr }) => {
+  const { user: currentUser } = UserAuth();
   const navigate = useNavigate();
 
   const handleClick = async (id) => {
-    const checkChat = await isChatExist(currentUserChats, id);
+    const checkChat = await isChatExist(chatsArr, id);
     if (checkChat) {
-      return navigate(`./${checkChat?.id}`);
+      return navigate(`/chats/${currentUser?.uid}/${checkChat?.id}`);
     } else {
       const uid = uuid();
-      set(chats_ref, {
-        [uid]: {
-          chatId: uid,
-          userIds: [user?.id, id],
-          createdAt: Date.now(),
-        },
+      const user_ref = ref(database, `chats/${uid}`);
+      console.log(uid);
+      update(user_ref, {
+        chatId: uid,
+        userIds: [user?.id, currentUser?.uid],
+        createdAt: Date.now(),
       });
-      return navigate(`./${uid}`);
+      return navigate(`/chats/${currentUser?.uid}/${uid}`);
     }
   };
 

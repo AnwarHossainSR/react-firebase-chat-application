@@ -5,7 +5,11 @@ import 'swiper/css/free-mode';
 import 'swiper/css/pagination';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { UserAuth } from '../../context/AuthContext';
-import { convertToArray, getCurrentUserChats } from '../../utils/helper';
+import {
+  convertToArray,
+  getCurrentUserChats,
+  usersExceptMe,
+} from '../../utils/helper';
 import ChatCard from '../Card/ChatCard';
 import ActiveUser from '../Chat/ActiveUser';
 import Search from '../Search';
@@ -14,8 +18,10 @@ const Sidebar = () => {
   const { user } = UserAuth();
   const [users, chats] = useOutletContext();
   const allUsers = convertToArray(users);
+  const allUsersExceptMe = usersExceptMe(allUsers, user);
   const chatsArr = convertToArray(chats);
-  const currentUserChats = getCurrentUserChats(chatsArr, user?.id);
+  const currentUserChats = getCurrentUserChats(chatsArr, user?.uid);
+  const loggedIn = allUsers.find((item) => item?.id === user?.uid);
 
   return (
     <Stack p={2} gap={1} position="relative">
@@ -26,7 +32,7 @@ const Sidebar = () => {
         }}
       >
         <Typography variant="p" color="#D2D4D5">
-          Chats
+          {`${loggedIn?.firstName} ${loggedIn?.lastName}`}
         </Typography>
         <Search />
       </Stack>
@@ -40,15 +46,19 @@ const Sidebar = () => {
           justifyContent: 'flex-start',
         }}
       >
-        {allUsers &&
-          allUsers.map((item) => (
+        {allUsersExceptMe &&
+          allUsersExceptMe.map((item) => (
             <SwiperSlide
               key={item?.id}
               style={{
                 width: '71px',
               }}
             >
-              <ActiveUser user={item} currentUserChats={currentUserChats} />
+              <ActiveUser
+                user={item}
+                currentUserChats={currentUserChats}
+                chatsArr={chatsArr}
+              />
             </SwiperSlide>
           ))}
       </Swiper>

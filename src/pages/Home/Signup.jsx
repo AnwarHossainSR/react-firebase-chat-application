@@ -21,8 +21,8 @@ const SignUp = () => {
   const [inputData, setInputData] = useState({});
   const { user, createUser } = UserAuth();
   const navigate = useNavigate();
-  const users_ref = ref(database, `users/${user?.uid}`);
-  const user_exists = useFirebase(users_ref);
+  const user_ref = ref(database, `users/${user?.uid}`);
+  const user_exists = useFirebase(user_ref);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -42,7 +42,9 @@ const SignUp = () => {
       setLoading(false);
     } catch (err) {
       const errors = {};
-      errors.custom = 'Invalid email or password';
+      if (err.code === 'auth/email-already-in-use') {
+        errors.custom = 'Email already in use';
+      }
       setLoading(false);
       return setError(errors);
     }
@@ -51,7 +53,7 @@ const SignUp = () => {
     if (user_exists) {
       return navigate(`/chats/${user.uid}`);
     } else {
-      update(users_ref, {
+      update(user_ref, {
         firstName: inputData.firstName,
         lastName: inputData.lastName,
         email: inputData.email,
